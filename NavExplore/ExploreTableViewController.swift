@@ -8,9 +8,10 @@
 
 import UIKit
 
-@IBDesignable class ExploreTableViewController: UITableViewController, UISearchResultsUpdating {
+@IBDesignable class ExploreTableViewController: UITableViewController, UISearchControllerDelegate, UISearchResultsUpdating {
 
     @IBInspectable var enableSearch: Bool = false
+    @IBInspectable var hideSearchOnScroll: Bool = true
     @IBInspectable var numberSections: Int = 5
     @IBInspectable var rowsPerSection: Int = 5
     
@@ -28,12 +29,25 @@ import UIKit
             resultsController = storyboard!.instantiateViewController(withIdentifier: "ResultsViewController") as? ResultsViewController
             resultsController?.dataSource = searchSource
             searchController = UISearchController(searchResultsController: resultsController)
+            searchController.delegate = self
             searchController.searchResultsUpdater = self
-            tableView.tableHeaderView = searchController.searchBar
+            if #available(iOS 11.0, *) {
+                navigationItem.searchController = searchController
+                navigationItem.hidesSearchBarWhenScrolling = false
+            } else {
+                tableView.tableHeaderView = searchController.searchBar
+            }
             definesPresentationContext = true
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if #available(iOS 11.0, *) {
+            navigationItem.hidesSearchBarWhenScrolling = hideSearchOnScroll
+        }
+    }
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return dataSource.displaySections.count
     }

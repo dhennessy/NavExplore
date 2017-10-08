@@ -1,0 +1,10 @@
+xcuserdata
+*.xccheckout
+.DS_Store
+Build
+Release
+.vagrant
+api.linguan.com/linguan.db
+fastlane/report.xml
+*.dSYM.zip
+*.ipa
